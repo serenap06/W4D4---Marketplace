@@ -12,7 +12,7 @@ const productImage = document.getElementById('product-image')
 
 
 
-const getDetailsProduct = async () => {
+const getDetailsProduct = async (id) => {
     try {
         const result = await fetch(apiUrl, {
             headers: {
@@ -31,4 +31,4 @@ const getDetailsProduct = async () => {
     }
 }
 
-getDetailsProduct()
+getDetailsProduct(id)

@@ -1,8 +1,12 @@
 const apiUrl = `https://striveschool-api.herokuapp.com/api/product`
 const tokenApi = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2YTYyNGU5OTIxMDU5ZjAwMTVlMjNhMGEiLCJpYXQiOjE3ODQ4Mjc1NDUsImV4cCI6MTc4NjAzNzE0NX0.hU2-WP90xDW0IybVUNXNyMVLGle1Jog_qy0doYLJRkg'
 
-// getElement 
+//getElement
+const inputSearch = document.getElementById("input-search")
+const btnSearch = document.getElementById("btn-search")
 const containerCards = document.getElementById('container-cards')
+
+let allProducts = []
 
 const getProducts = async () => {
     try {
@@ -12,7 +16,7 @@ const getProducts = async () => {
             }
         })
         const data = await result.json()
-        console.log(data)
+        allProducts = data
         displayProductsCol(data)
     } catch (e) {
         console.log(e)
@@ -21,7 +25,7 @@ const getProducts = async () => {
 getProducts()
 
 
-const createCardProduct = ({ name, price, imageUrl, brand,_id }) => {
+const createCardProduct = ({ name, price, imageUrl, brand, _id }) => {
 
     /* <div class="card" style="width: 18rem;">
          <img src="..." class="card-img-top" alt="...">
@@ -41,14 +45,14 @@ const createCardProduct = ({ name, price, imageUrl, brand,_id }) => {
     colCard.appendChild(cardProduct)
 
     const cardImg = document.createElement('img')
-    cardImg.classList.add('card-img-top', 'img-fluid','w-100','object-fit-cover')
-    cardImg.style.height='350px'
+    cardImg.classList.add('card-img-top', 'img-fluid', 'w-100', 'object-fit-cover')
+    cardImg.style.height = '250px'
     cardImg.src = imageUrl
     cardImg.alt = name
 
     const cardBody = document.createElement('div')
-    cardBody.classList.add('card-body', 'ps-1','pb-0')
-    
+    cardBody.classList.add('card-body', 'ps-1', 'pb-0')
+
 
     const cardBrand = document.createElement('span')
     cardBrand.classList.add('card-text', 'text-dark')
@@ -68,16 +72,16 @@ const createCardProduct = ({ name, price, imageUrl, brand,_id }) => {
     cardPrice.style.fontWeight = '200'
 
     const cardFooter = document.createElement('div')
-    cardFooter.classList.add('ps-1','pt-2')
+    cardFooter.classList.add('ps-1', 'pt-2')
 
     const cardInfoBtn = document.createElement('a')
-    cardInfoBtn.classList.add('btn', 'ps-0','border-0')
+    cardInfoBtn.classList.add('btn', 'ps-0', 'border-0')
     cardInfoBtn.innerHTML = `<ion-icon name="information-circle-outline"></ion-icon>`
-    cardInfoBtn.href=`details.html?id=${_id}`
+    cardInfoBtn.href = `details.html?id=${_id}`
     const cardPayBtn = document.createElement('button')
-    cardPayBtn.classList.add('btn','border-0')
+    cardPayBtn.classList.add('btn', 'border-0')
     cardPayBtn.innerHTML = `<ion-icon name="bag-add-outline"></ion-icon>`
-    
+
 
 
     cardBody.append(cardBrand, cardName, cardPrice)
@@ -90,7 +94,31 @@ const createCardProduct = ({ name, price, imageUrl, brand,_id }) => {
 }
 
 const displayProductsCol = (products) => {
+    containerCards.innerHTML = ""
+    if (products.length===0){
+        containerCards.innerHTML=`<p>No products</p>`
+        return
+    }
     const productsCol = products.map(product => createCardProduct(product))
     containerCards.append(...productsCol)
 }
 
+//funzione che cerca i prodotti
+
+btnSearch.addEventListener('click', (e) => {
+    e.preventDefault()
+    searchProducts()
+})
+
+inputSearch.addEventListener('input',(e)=>{
+    e.preventDefault()
+    searchProducts()
+})
+
+const searchProducts = ()=>{
+    const productSearch = inputSearch.value.trim().toLowerCase()
+    const productFiltered = allProducts.filter(product => {
+       return product.name.toLowerCase().includes(productSearch)
+    })
+    displayProductsCol(productFiltered)
+}

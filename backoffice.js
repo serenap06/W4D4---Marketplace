@@ -13,13 +13,13 @@ const editBrand = document.getElementById('editBrand')
 const editDescription = document.getElementById('editDescription')
 const editBtn = document.getElementById('edit-btn')
 
-let currentEditId = null 
-
+let currentEditId = null
+const apiUrl = 'https://striveschool-api.herokuapp.com/api/product'
 const tokenApi = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2YTYyNGU5OTIxMDU5ZjAwMTVlMjNhMGEiLCJpYXQiOjE3ODQ4Mjc1NDUsImV4cCI6MTc4NjAzNzE0NX0.hU2-WP90xDW0IybVUNXNyMVLGle1Jog_qy0doYLJRkg'
-// FETCH
+//FETCH
 const getProducts = async () => {
     try {
-        const result = await fetch('https://striveschool-api.herokuapp.com/api/product', {
+        const result = await fetch(apiUrl, {
             headers: {
                 Authorization: `Bearer ${tokenApi}`
             }
@@ -38,21 +38,25 @@ const createProductRow = ({ name, price, imageUrl, brand, description, _id }) =>
 
     const tdName = document.createElement('td')
     tdName.innerText = name //title>name
-    tdName.classList.add('w-25')
+
     const tdPrice = document.createElement('td')
     tdPrice.innerText = `€ ${price}`
-    tdPrice.classList.add('w-25')
+
     const tdImage = document.createElement('td')
+
     const imgProduct = document.createElement('img')
     imgProduct.classList.add('img-fluid')
     imgProduct.src = imageUrl //image>imageUrl
+    imgProduct.style.width = "50px"
+    imgProduct.style.height = "50px"
     tdImage.appendChild(imgProduct)
     const tdBrand = document.createElement('td')
     tdBrand.innerText = brand //category>brand
-    tdBrand.classList.add('w-25')
+
     const tdDescription = document.createElement('td')
     tdDescription.innerText = description
     tdDescription.classList.add('w-50')
+    const tdButtons = document.createElement('td')
     const deleteBtn = document.createElement('button')
     deleteBtn.innerHTML = `<i class="bi bi-trash3"></i>`
     deleteBtn.classList.add('btn')
@@ -61,6 +65,8 @@ const createProductRow = ({ name, price, imageUrl, brand, description, _id }) =>
     openEditModalBtn.classList.add('btn')
     openEditModalBtn.setAttribute('data-bs-toggle', 'modal')
     openEditModalBtn.setAttribute('data-bs-target', '#editForm')
+    tdButtons.append(deleteBtn, openEditModalBtn)
+
 
     console.log(_id)
     // addEventListener
@@ -73,7 +79,7 @@ const createProductRow = ({ name, price, imageUrl, brand, description, _id }) =>
         populateEditProductForm(_id)
     })
 
-    trProduct.append(tdName, tdPrice, tdImage, tdBrand, tdDescription, deleteBtn, openEditModalBtn)
+    trProduct.append(tdName, tdPrice, tdImage, tdBrand, tdDescription, tdButtons)
     return trProduct
 }
 
@@ -81,6 +87,11 @@ editBtn.addEventListener('click', (e) => {
     e.preventDefault()
     if (currentEditId) {
         editProduct(currentEditId, generateEditProductPayload())
+        const modalForm = document.getElementById('editForm')
+        const modalInstance = bootstrap.Modal.getInstance(modalForm)
+        if (modalInstance) {
+            modalInstance.hide()
+        }
     }
 })
 
@@ -111,7 +122,7 @@ addProductBtn.addEventListener('click', (e) => {
 
 const addProduct = async (product) => {
     try {
-        const data = await fetch('https://striveschool-api.herokuapp.com/api/product', {
+        const data = await fetch(apiUrl, {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${tokenApi}`,
@@ -130,7 +141,7 @@ const addProduct = async (product) => {
 // funzione eliminare prodotto
 const deleteProduct = async (id) => {
     try {
-        const response = await fetch(`https://striveschool-api.herokuapp.com/api/product/${id}`,
+        const response = await fetch(`${apiUrl}/${id}`,
             {
                 method: 'DELETE',
                 headers: {
@@ -148,7 +159,7 @@ const deleteProduct = async (id) => {
 
 const getSingleProduct = async (id) => {
     try {
-        const response = await fetch(`https://striveschool-api.herokuapp.com/api/product/${id}`,
+        const response = await fetch(`${apiUrl}/${id}`,
             {
                 headers: {
                     Authorization: `Bearer ${tokenApi}`
@@ -175,7 +186,7 @@ const populateEditProductForm = async (id) => {
 
 const editProduct = async (id, payLoad) => {
     try {
-        const response = await fetch(`https://striveschool-api.herokuapp.com/api/product/${id}`,
+        const response = await fetch(`${apiUrl}/${id}`,
             {
                 method: 'PUT',
                 headers: {
@@ -183,13 +194,13 @@ const editProduct = async (id, payLoad) => {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(payLoad)
-            }
-        )
+            })
         return await response.json()
     } catch (error) {
         console.log(error)
-    } finally{
+    } finally {
         getProducts()
+
     }
 }
 
