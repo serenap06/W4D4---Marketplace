@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backoffice</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+</head>
+
+<body>
+    <header class="overflow-hidden mx-5">
+        <div class="bg-warning">
+            <span class="p-4 fw-light h5 text-white">Admin Dashboard</span>
+        </div>
+        <nav class="navbar navbar-expand-lg border-bottom my-2">
+            <div class="container">
+                <a class="navbar-brand text-warning fs-4">MARKETPLACE</a>
+                <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link active text-dark" aria-current="page" href="index.html">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="fw-medium text-black nav-link" href="backoffice.html">Backoffice</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+        </nav>
+    </header>
+    <section>
+        <div class="container">
+            <form action="">
+                <div class="row py-4 gy-2">
+                    <div class="col-12 col-sm-6">
+                        <input type="text" class="form-control" placeholder="Name" aria-label="Name" id="name">
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        <input type="number" class="form-control" placeholder="Price" aria-label="Price" id="price">
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        <input type="text" class="form-control" placeholder="Image url" aria-label="Image url" id="imgUrl">
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        <input type="text" class="form-control" placeholder="Brand" aria-label="Brand" id="brand">
+                    </div>
+                    <div class="col-12">
+                        <input type="text" class="form-control" placeholder="Description" aria-label="Description"
+                            id="description">
+                    </div>
+                    <div class="col-12 d-flex justify-content-end">
+                        <button type="submit" class="btn btn-warning text-white" id="add-btn">Add</button>
+                    </div>
+                </div>
+            </form>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th class="text-warning fw-medium">Name</th>
+                        <th class="text-warning fw-medium">Price</th>
+                        <th class="text-warning fw-medium">Image</th>
+                        <th class="text-warning fw-medium">Brand</th>
+                        <th class="text-warning fw-medium">Description</th>
+                        <th class="text-warning fw-medium">Options</th>
+                    </tr>
+                </thead>
+                <tbody id="product-row"></tbody>
+            </table>
+            <div class="modal fade" id="editForm" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Product</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="">
+                                <div class="row py-4 gy-2">
+                                    <div class="col-12 col-sm-6">
+                                        <input type="text" class="form-control" placeholder="Name" aria-label="Name"
+                                            id="editName">
+                                    </div>
+                                    <div class="col-12 col-sm-6">
+                                        <input type="number" class="form-control" placeholder="Price" aria-label="Price"
+                                            id="editPrice">
+                                    </div>
+                                    <div class="col-12 col-sm-6">
+                                        <input type="text" class="form-control" placeholder="Image url"
+                                            aria-label="Image url" id="editImgUrl">
+                                    </div>
+                                    <div class="col-12 col-sm-6">
+                                        <input type="text" class="form-control" placeholder="Brand" aria-label="Brand"
+                                            id="editBrand">
+                                    </div>
+                                    <div class="col-12">
+                                        <input type="text" class="form-control" placeholder="Description"
+                                            aria-label="Description" id="editDescription">
+                                    </div>
+                                    <div class="col-12">
+                                        <button type="submit" class="btn btn-warning text-white" id="edit-btn">Edit</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-warning text-warning text-over-white" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"
+        integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y"
+        crossorigin="anonymous"></script>
+    <script src="./backoffice.js"></script>
+</body>
+
+</html>
