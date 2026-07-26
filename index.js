@@ -5,9 +5,11 @@ const tokenApi = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2YTYyNGU5OTIxM
 const inputSearch = document.getElementById("input-search")
 const btnSearch = document.getElementById("btn-search")
 const containerCards = document.getElementById('container-cards')
+const containerFilters = document.getElementById('container-filters')
 
 let allProducts = []
 
+//fetch GET
 const getProducts = async () => {
     try {
         const result = await fetch(apiUrl, {
@@ -17,26 +19,16 @@ const getProducts = async () => {
         })
         const data = await result.json()
         allProducts = data
-        displayProductsCol(data)
+        displayProducts(allProducts)
+        displayFilters(allProducts)
     } catch (e) {
         console.log(e)
     }
 }
 getProducts()
 
-
+//creazione card prodotti
 const createCardProduct = ({ name, price, imageUrl, brand, _id }) => {
-
-    /* <div class="card" style="width: 18rem;">
-         <img src="..." class="card-img-top" alt="...">
-        <div class="card-body">
-        <p class="card-text">
-         <h5 class="card-title">Card title</h5>
-         <a href="#" class="btn btn-primary">Go somewhere</a>
-         <a href="#" class="btn btn-primary">Go somewhere</a>
-        </div>
-      </div> */
-
     const colCard = document.createElement('div')
     colCard.setAttribute('class', 'col-12 col-md-6 col-lg-4 my-3')
 
@@ -93,32 +85,69 @@ const createCardProduct = ({ name, price, imageUrl, brand, _id }) => {
     return colCard
 }
 
-const displayProductsCol = (products) => {
+//mostra prodotti
+const displayProducts = (products) => {
     containerCards.innerHTML = ""
-    if (products.length===0){
-        containerCards.innerHTML=`<p>No products</p>`
+    if (products.length === 0) {
+        containerCards.innerHTML = `<p>No products</p>`
         return
     }
     const productsCol = products.map(product => createCardProduct(product))
     containerCards.append(...productsCol)
 }
 
-//funzione che cerca i prodotti
-
+//ricerca prodotti al click
 btnSearch.addEventListener('click', (e) => {
     e.preventDefault()
     searchProducts()
 })
-
-inputSearch.addEventListener('input',(e)=>{
+//cerca prodotti all'input inserito
+inputSearch.addEventListener('input', (e) => {
     e.preventDefault()
     searchProducts()
 })
-
-const searchProducts = ()=>{
+//filtra e mostra i prodotti 
+const searchProducts = () => {
     const productSearch = inputSearch.value.trim().toLowerCase()
     const productFiltered = allProducts.filter(product => {
-       return product.name.toLowerCase().includes(productSearch)
+        return product.name.toLowerCase().includes(productSearch)
     })
-    displayProductsCol(productFiltered)
+    displayProducts(productFiltered)
+}
+// crea le checkbox con i nomi dei Brand
+const createFiltersCheckbox = (brand) => {
+    // <div class="form-check">
+    //   <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault1">
+    //   <label class="form-check-label" for="radioDefault1">
+    //     Default radio
+    //   </label>
+    // </div>
+    const colFilter = document.createElement('div')
+    colFilter.classList.add('row','mt-3','ps-3')
+
+    const formFilter = document.createElement('div')
+    formFilter.classList.add('form-check')
+    
+    const inputFilter = document.createElement('input')
+    inputFilter.classList.add('form-check-input')
+    inputFilter.setAttribute('type','radio')
+    inputFilter.setAttribute('name','inputFilterBrand')
+    inputFilter.setAttribute('id','inputFilterBrand')
+
+    const labelFilter = document.createElement('label')
+    labelFilter.classList.add('form-check-label')
+    labelFilter.setAttribute('for','inputFilterBrand')
+    labelFilter.innerText= brand
+
+    formFilter.append(inputFilter,labelFilter)
+    colFilter.appendChild(formFilter)
+    return colFilter
+}
+// mostrare filtri Brand
+const displayFilters = (products)=>{
+    containerFilters.innerText=''
+    const allBrands = products.map(product=>product.brand).filter(Boolean)
+    const uniqueBrands =[...new Set(allBrands)]
+    const filtersCol = uniqueBrands.map(brand => createFiltersCheckbox(brand))
+    containerFilters.append(...filtersCol)
 }
