@@ -96,16 +96,6 @@ const displayProducts = (products) => {
     containerCards.append(...productsCol)
 }
 
-//ricerca prodotti al click
-btnSearch.addEventListener('click', (e) => {
-    e.preventDefault()
-    searchProducts()
-})
-//cerca prodotti all'input inserito
-inputSearch.addEventListener('input', (e) => {
-    e.preventDefault()
-    searchProducts()
-})
 //filtra e mostra i prodotti 
 const searchProducts = () => {
     const productSearch = inputSearch.value.trim().toLowerCase()
@@ -114,40 +104,86 @@ const searchProducts = () => {
     })
     displayProducts(productFiltered)
 }
+
+//ricerca prodotti al click
+btnSearch.addEventListener('click', (e) => {
+    e.preventDefault()
+    searchProducts()
+})
+
+//cerca prodotti all'input inserito
+inputSearch.addEventListener('input', (e) => {
+    e.preventDefault()
+    searchProducts()
+})
+
+
+
 // crea le checkbox con i nomi dei Brand
-const createFiltersCheckbox = (brand) => {
-    // <div class="form-check">
-    //   <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault1">
-    //   <label class="form-check-label" for="radioDefault1">
-    //     Default radio
-    //   </label>
-    // </div>
+const createFiltersCheckbox = (brand, count) => {
     const colFilter = document.createElement('div')
-    colFilter.classList.add('row','mt-3','ps-3')
+    colFilter.classList.add('row', 'mt-3', 'ps-3')
 
     const formFilter = document.createElement('div')
     formFilter.classList.add('form-check')
-    
+
     const inputFilter = document.createElement('input')
-    inputFilter.classList.add('form-check-input')
-    inputFilter.setAttribute('type','radio')
-    inputFilter.setAttribute('name','inputFilterBrand')
-    inputFilter.setAttribute('id','inputFilterBrand')
+    inputFilter.classList.add('form-check-input', 'brand-filter')
+    inputFilter.type = 'checkbox'
+    inputFilter.value = brand
+    inputFilter.id = `filter-${brand}`
+
+    inputFilter.addEventListener('change', () => {
+        if (inputFilter.checked) {
+            inputFilter.classList.add('bg-warning', 'border-0')
+        } else {
+            inputFilter.classList.remove('bg-warning', 'border-0')
+        }
+
+
+
+
+
+        filterByBrand()
+    })
 
     const labelFilter = document.createElement('label')
     labelFilter.classList.add('form-check-label')
-    labelFilter.setAttribute('for','inputFilterBrand')
-    labelFilter.innerText= brand
+    labelFilter.htmlFor = `filter-${brand}`
+    labelFilter.innerText = `${brand} (${count})`
 
-    formFilter.append(inputFilter,labelFilter)
+    formFilter.append(inputFilter, labelFilter)
     colFilter.appendChild(formFilter)
     return colFilter
 }
+
 // mostrare filtri Brand
-const displayFilters = (products)=>{
-    containerFilters.innerText=''
-    const allBrands = products.map(product=>product.brand).filter(Boolean)
-    const uniqueBrands =[...new Set(allBrands)]
-    const filtersCol = uniqueBrands.map(brand => createFiltersCheckbox(brand))
-    containerFilters.append(...filtersCol)
+const displayFilters = (products) => {
+    containerFilters.innerText = ''
+    const allBrands = products.map(product => product.brand).filter(Boolean)
+    const brandCounts = allBrands.reduce((acc, brand) => {
+        acc[brand] = (acc[brand] || 0) + 1
+        return acc
+    }, {})
+    Object.keys(brandCounts).forEach(brand => {
+        const count = brandCounts[brand]
+        const filterElement = createFiltersCheckbox(brand, count)
+        containerFilters.appendChild(filterElement)
+    })
+}
+
+//applicare i filtri alla ricerca
+const filterByBrand = () => {
+    const selectedCheckboxes = document.querySelectorAll('.brand-filter:checked')
+    const arraySelectedBrands = Array.from(selectedCheckboxes).map(checkbox => checkbox.value)
+    if (selectedCheckboxes.length === 0) {
+        displayProducts(allProducts)
+        return
+    } else {
+        const brandFiltered = allProducts.filter(product => {
+            return arraySelectedBrands.includes(product.brand)
+        })
+        displayProducts(brandFiltered)
+    }
+
 }
